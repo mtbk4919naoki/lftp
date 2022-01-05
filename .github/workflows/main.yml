@@ -1,10 +1,10 @@
 # workflowの名前
-name: Sample actions
+name: Rsync server actions
 
 # トリガーの設定
 on:
   push:
-    branches: master # mainブランチの場合はmainに変更
+    branches: main # mainブランチの場合はmainに変更
 
 jobs:
   build:
@@ -13,5 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run a one-line script
-        run: echo Hello, world! # Hello, world!と出力する
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: -avzr --delete
+          path: .
+          remote_path: /home/nyc/nycreation.jp/lftp/
+          remote_host: 160.251.44.55
+          remote_user: nyc
+          remote_key: ${{ secrets.PRIVATE_KEY }
+          remote_port: ${{ secrets.DEPLOY_PORT }}
